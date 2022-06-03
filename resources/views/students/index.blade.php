@@ -38,8 +38,10 @@
 <div class="container py-5">
     <div class="row">
         <div class="col-md-12">
+
+              <div id="success_msg"></div>
             <div class="card">
-                <div id="success_msg"></div>
+              
                 <div class="card-header">
                     <h4>Students Data</h4>
                     <a href="http://" data-bs-toggle="modal" data-bs-target="#addStudentModal" class="btn btn-primary float-end btn-sm"> Add Student</a>
@@ -57,10 +59,37 @@
 
 @section('scripts')
 <script>
+
+
+   
     $(document).ready(function () {
+
+// showAlerts('info', 'error on the toastr');
+         function showAlerts(type, msg){
+    var msg = msg;
+   
+        switch(type){
+            case 'info':
+               toastr.info(msg);
+                break;
+            case 'success':
+                toastr.success(msg);
+                break;
+            case 'warning':
+                toastr.warning(msg);
+                break;
+             case 'error':
+                toastr.error(msg);
+                break;
+        }
+    }
+
+  
+
+
+
         $(document).on('click','.add_student', function (e) {
             event.preventDefault();
-
            //get input values
 
            var data = {
@@ -93,13 +122,16 @@
                     $('#save_errorlist').html("");
                     $('#save_errorlist').addClass('alert alert-danger');
                     $.each(response.errors, function (key, err_value) { 
-                         $('#save_errorlist').append(`<li class='text-danger'>${err_value}</li>`)
+                         $('#save_errorlist').append(`<li class='text-danger'>${err_value}</li>`);
+                         showAlerts('error', err_value);
                     });
                 }else{
                     $('#success_msg').html(""); 
                     $('#success_msg').addClass('alert alert-success');
                     $('#success_msg').text(response.message);
-                    $('#addStudentModal').modal('hide');
+                    // $('#addStudentModal').modal('hide');
+                     showAlerts('success', response.message);
+                    $('.btn-close').click();
                     setTimeout(() => {
                         $('.modal-backdrop').hide();
                         
