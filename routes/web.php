@@ -19,6 +19,7 @@ Route::get('/', function () {
 });
 
 Route::get('/students', [StudentsController::class, 'index']);
+Route::get('/fetch-students', [StudentsController::class, 'fetchStudents']);
 Route::post('students', [StudentsController::class, 'store']);
 
 Auth::routes();
