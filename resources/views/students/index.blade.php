@@ -73,6 +73,34 @@
 </div>
 
 {{-- end edit/update students modal --}}
+
+{{-- Delete student modal --}}
+
+<div class="modal fade" id="deleteStudentModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">DeleteStudent</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+
+        <ul id="update_errorlist" ></ul>   
+     <form action="" class="form-group mb-3">
+         <input type="hidden" id="delete_student_id">
+         
+         <h4>Are you sure you want to delete?</h4>
+     </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary delete_student_btn">Yes, Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{{-- end Delete student modal --}}
 <div class="container py-5">
     <div class="row">
         <div class="col-md-12">
@@ -181,6 +209,42 @@ $.ajax({
 });
 
 }
+
+//Delete feature ajax
+
+$(document).on('click', '.delete_student', function () {
+    
+    var stud_id = $(this).val();
+    $('#delete_student_id').val(stud_id);
+    $('#deleteStudentModal').modal('show');
+});
+
+$(document).on('click', '.delete_student_btn', function (e) {
+    e.preventDefault();
+
+    var stud_id = $('#delete_student_id').val();
+
+      $.ajaxSetup({
+    headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+});
+
+    $.ajax({
+        type: "DELETE",
+        url: "/delete-student/"+stud_id,
+        success: function (response) {
+           // console.log(response);
+           $('#success_msg').addClass('alert alert-success');
+                    $('#success_msg').text(response.message);
+                    // $('#deleteStudentModal').modal('hide');
+                     showAlerts('success', response.message);
+                     
+                      $('.btn-close').click();
+                      fetchStudents();
+        }
+    });
+});
   
 //Edit form view with ajax
 $(document).on('click', '.edit_student', function (event) {
