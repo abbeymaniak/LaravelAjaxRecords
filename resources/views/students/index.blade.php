@@ -44,9 +44,25 @@
               
                 <div class="card-header">
                     <h4>Students Data</h4>
-                    <a href="http://" data-bs-toggle="modal" data-bs-target="#addStudentModal" class="btn btn-primary float-end btn-sm"> Add Student</a>
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#addStudentModal" class="btn btn-primary float-end btn-sm"> Add Student</a>
                 </div>
                 <div class="card-body">
+                    <table class="table table-bordered table-stripped">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Course</th>
+                                <th>Edit</th>
+                                <th>Delete</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                           
+                        </tbody>
+                    </table>
                     
                 </div>
             </div>
@@ -61,8 +77,15 @@
 <script>
 
 
+
    
     $(document).ready(function () {
+
+
+
+
+
+
 
 // showAlerts('info', 'error on the toastr');
          function showAlerts(type, msg){
@@ -84,7 +107,50 @@
         }
     }
 
+
+   
+
+//ajax fetch students
+ fetchStudents();
+function fetchStudents(){
+$.ajax({
+    type: "GET",
+    url: "/fetch-students",
+    dataType: "json",
+    success: function (response) {
+        //console.log(response.students)
+        $('tbody').html("");
+        $.each(response.students, function (key, item) {
+            
+            $('tbody').append(
+                ` <tr>
+                                <td>${item.id}</td>
+                                <td>${item.name}</td>
+                                <td>${item.email}</td>
+                                <td>${item.phone}</td>
+                                <td>${item.course}</td>
+                                <td>
+                                    <button type="button" value="${item.id}" class="edit_student btn btn-primary btn-sm">edit</button>
+                                </td>
+                                <td>
+                                    <button type="button" value="${item.id}" class="delete_student btn btn-danger btn-sm">delete</button>
+                                </td>
+                            </tr>`
+            )
+             
+        });
+    }
+});
+
+}
   
+$(document).on('click', '.edit_student', function () {
+    event.preventDefault();
+    var student_id = $(this).val();
+    $(#editStudentModal).modal('show');
+
+    console.log(student_id)
+});
 
 
 
@@ -137,6 +203,8 @@
                         
                     }, 3000);
                     $('#addStudentModal').find('input').val("");
+                    //fetch all students
+                     fetchStudents();
                 }
             }
         });

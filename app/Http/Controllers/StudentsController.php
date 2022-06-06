@@ -47,4 +47,15 @@ class StudentsController extends Controller
             ]);
         }
     }
+
+
+
+    public function fetchStudents()
+    {
+        $students = Students::all();
+
+        return response()->json([
+            'students' => $students
+        ]);
+    }
 }
