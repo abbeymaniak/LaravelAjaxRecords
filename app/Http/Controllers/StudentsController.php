@@ -119,4 +119,16 @@ class StudentsController extends Controller
             }
         }
     }
+
+
+    public function destroy($id)
+    {
+        $student = Students::find($id);
+        $student->delete();
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'Delete Successful'
+        ]);
+    }
 }
