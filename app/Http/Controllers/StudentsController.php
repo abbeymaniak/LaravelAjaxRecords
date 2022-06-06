@@ -58,4 +58,23 @@ class StudentsController extends Controller
             'students' => $students
         ]);
     }
+
+    public function edit($id)
+    {
+
+        $student = Students::find($id);
+
+        if ($student) {
+            return response()->json([
+                'status' => 200,
+                'student' => $student
+            ]);
+        } else {
+
+            return response()->json([
+                'status' => 404,
+                'message' => 'Student Not Found'
+            ]);
+        }
+    }
 }

@@ -34,7 +34,45 @@
     </div>
   </div>
 </div>
+{{-- End Adstudentmodal --}}
 
+{{-- edit/update studentsmodal --}}
+
+<div class="modal fade" id="editStudentModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Edit & Update Student</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+
+        <ul id="update_errorlist" ></ul>   
+     <form action="" class="form-group mb-3">
+         <input type="hidden" id="edit_student_id">
+         <br>
+         <label for="">Name</label>
+         <input type="text" name="name" id="edit_name" class="name form-control">
+
+         <label for="">Email</label>
+         <input type="text" name="email" id="edit_email"  class="email form-control">
+
+         <label for="">Phone</label>
+         <input type="text" name="phone" id="edit_phone"  class="phone form-control">
+
+         <label for="">Course</label>
+         <input type="text" name="course" id="edit_course"  class="course form-control">
+     </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary update_student">Update</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{{-- end edit/update students modal --}}
 <div class="container py-5">
     <div class="row">
         <div class="col-md-12">
@@ -69,7 +107,7 @@
         </div>
     </div>
 </div>
-{{-- End Addstudentmodal --}}
+
 
 @endsection
 
@@ -147,9 +185,27 @@ $.ajax({
 $(document).on('click', '.edit_student', function () {
     event.preventDefault();
     var student_id = $(this).val();
-    $(#editStudentModal).modal('show');
+    $('#editStudentModal').modal('show');
 
-    console.log(student_id)
+    $.ajax({
+        type: "GET",
+        url: "/edit-student/"+student_id,
+        success: function (response) {
+            //console.log(response)
+            if(response.status == 404){
+                $('#success_message').html("");
+                $('#success_message').addClass("alert alert-danger");
+                showAlerts('error', response.message)
+            }else{
+
+                $('#edit_student_id').val(response.student.id);
+                $('#edit_name').val(response.student.name);
+                $('#edit_email').val(response.student.email);
+                $('#edit_phone').val(response.student.phone);
+                $('#edit_course').val(student_id );
+            }
+        }
+    });
 });
 
 
