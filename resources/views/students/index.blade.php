@@ -182,7 +182,8 @@ $.ajax({
 
 }
   
-$(document).on('click', '.edit_student', function () {
+//Edit form view with ajax
+$(document).on('click', '.edit_student', function (event) {
     event.preventDefault();
     var student_id = $(this).val();
     $('#editStudentModal').modal('show');
@@ -198,18 +199,89 @@ $(document).on('click', '.edit_student', function () {
                 showAlerts('error', response.message)
             }else{
 
-                $('#edit_student_id').val(response.student.id);
+                $('#edit_student_id').val(student_id );
                 $('#edit_name').val(response.student.name);
                 $('#edit_email').val(response.student.email);
                 $('#edit_phone').val(response.student.phone);
-                $('#edit_course').val(student_id );
+                $('#edit_course').val(response.student.course);
             }
         }
     });
 });
 
+//Update with edit form ajax
 
+$(document).on('click', '.update_student', function (e) {
+    e.preventDefault();
 
+    var stud_id = $('#edit_student_id').val();
+
+    // $(this).text('Updating...')
+
+    var data = {
+        name: $('#edit_name').val(),
+        email: $('#edit_email').val(),
+        phone: $('#edit_phone').val(),
+        course: $('#edit_course').val(),
+    }
+
+      $.ajaxSetup({
+    headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+});
+
+    $.ajax({
+        type: "PUT",
+        url: "/update-student/"+stud_id,
+        data: data,
+        dataType: "json",
+        beforeSend: function(response){
+           $('.update_student').text('Updating...'); 
+        },
+        success: function (response) {
+            //console.log(response);
+            if(response.status == 400){
+
+                //errors
+                 $('#update_errorlist').html("");
+                    $('#update_errorlist').addClass('alert alert-danger');
+                    $.each(response.errors, function (key, err_value) { 
+                         $('#update_errorlist').append(`<li class='text-danger'>${err_value}</li>`);
+                         showAlerts('error', err_value);
+                    });
+                     $('.update_student').text('Update'); 
+            }else if(response.status == 400){
+                 $('#update_errorlist').html(""); 
+                    $('#success_msg').addClass('alert alert-error');
+                    $('#success_msg').text(response.message);
+                    // $('#addStudentModal').modal('hide');
+                     showAlerts('success', response.message);
+                      $('.update_student').text('Update'); 
+            }else{
+ $('#update_errorlist').html("");
+                 $('#success_msg').html(""); 
+                    $('#success_msg').addClass('alert alert-success');
+                    $('#success_msg').text(response.message);
+                    // $('#addStudentModal').modal('hide');
+                     showAlerts('success', response.message);
+                    $('.btn-close').click();
+                    setTimeout(() => {
+                        $('.modal-backdrop').hide();
+                        
+                    }, 3000);
+                    $('#addStudentModal').find('input').val("");
+                     $('.update_student').text('Update'); 
+                    //fetch all students
+                     fetchStudents();
+
+            }
+        }
+    });
+
+});
+
+//Insert data with ajax
         $(document).on('click','.add_student', function (e) {
             event.preventDefault();
            //get input values
